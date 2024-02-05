@@ -3,8 +3,8 @@ import { Stage } from './Stage'
 
 const Wrapper = styled.div`
   position: relative;
-  width: 100%;
-  height: 100vh;
+  width: 800px;
+  height: 800px;
 `
 
 function App() {

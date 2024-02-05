@@ -1,7 +1,7 @@
 import { Orbit } from './Orbit';
 import styled from 'styled-components';
 import { Label } from './Label';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import * as THREE  from 'three';
 
@@ -28,7 +28,7 @@ export const Stage = ({
         <color attach="background" args={['#fff']} />
         <mesh position={[0, 0, 0]} receiveShadow castShadow>
           <sphereGeometry args={[2, 64, 64]} attach="geometry" />
-          <meshStandardMaterial color="black" opacity={0.01} transparent depthWrite={false}/>
+          <meshStandardMaterial color="black" opacity={0.02} transparent depthWrite={false}/>
         </mesh>
         <Orbit>
           <Label path={path} label="QPOC" pos={0.5}/>
@@ -43,6 +43,7 @@ export const Stage = ({
           <Label path={path} label="BUTT" pos={0.9}/>
         </Orbit>
         <OrbitControls enablePan={false}/>
+        <OrthographicCamera makeDefault top={2.2} bottom={-2.2} left={-2.2} right={2.2} zoom={1} near={0} far={3000} position={[0,0,10]}/>
       </Canvas>
     </Wrapper>
   );

@@ -26,7 +26,7 @@ export const Label = ({
 
   return (
     <group ref={ref}>
-      <sprite visible scale={[0.01,0.01,0.01]} {...props}>
+      <sprite visible scale={[0.03,0.03,0.03]} {...props}>
         <spriteMaterial map={texture} sizeAttenuation={false} depthWrite={false} />
       </sprite>
     </group>
@@ -44,9 +44,6 @@ function generateDotTexture() {
   context.arc(canvas.width/2, canvas.height/2, 15, 0, 2 * Math.PI, false);
   context.fillStyle = 'black';
   context.fill();
-
-  context.font = "48px serif";
-  context.fillText("QPOCdsfdsfdsfdsfdsfdsf", 10, 50);
 
   return canvas;
 }
