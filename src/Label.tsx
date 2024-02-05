@@ -3,13 +3,12 @@ import * as THREE  from 'three';
 
 interface LabelProps {
   path:THREE.Path
-  label:string
+  label?:string
   pos:number
 }
 
 export const Label = ({
   path,
-  label,
   pos,
   ...props
 }: LabelProps) => {
@@ -25,22 +24,14 @@ export const Label = ({
   const texture = new THREE.Texture( generateDotTexture() );
   texture.needsUpdate = true;
 
-  const textureText = new THREE.Texture( generateLabelTexture(label) );
-  textureText.needsUpdate = true;
-
   return (
     <group ref={ref}>
-      <sprite visible position={[0,0.1,0]} scale={[0.7,0.7,0.7]} {...props}>
-        <spriteMaterial map={textureText} sizeAttenuation={false} depthWrite={false} color={[1,1,1]} />
-      </sprite>
       <sprite visible scale={[0.01,0.01,0.01]} {...props}>
         <spriteMaterial map={texture} sizeAttenuation={false} depthWrite={false} />
       </sprite>
     </group>
   );
 };
-
-
 
 function generateDotTexture() {
   const canvas = document.createElement( 'canvas' );
@@ -60,6 +51,7 @@ function generateDotTexture() {
   return canvas;
 }
 
+/*
 function generateLabelTexture(label:string) {
   
   const canvas = document.createElement( 'canvas' );
@@ -87,4 +79,4 @@ function generateLabelTexture(label:string) {
 
 
   return canvas;
-}
+}*/
