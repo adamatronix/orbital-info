@@ -35,7 +35,7 @@ const CanvasComp = React.memo(({
   setLabelsArray
 }:CanvasCompProps) => {
   return (
-    <Canvas shadows camera={{ position: [0, 0, 3.5] }}>
+    <Canvas shadows>
         <color attach="background" args={['#fff']} />
         <mesh position={[0, 0, 0]} receiveShadow castShadow>
           <sphereGeometry args={[2, 64, 64]} attach="geometry" />
@@ -43,7 +43,7 @@ const CanvasComp = React.memo(({
         </mesh>
         <Orbits setLabelsArray={setLabelsArray}/>
         <OrbitControls enablePan={false} enableZoom={false}/>
-        <OrthographicCamera makeDefault top={2.2} bottom={-2.2} left={-2.2} right={2.2} zoom={1} near={0} far={3000} position={[0,0,10]}/>
+        <OrthographicCamera makeDefault manual top={2.2} bottom={-2.2} left={-2.2} right={2.2} zoom={1} near={0} far={3000} position={[0,0,10]}/>
       </Canvas>
   )
 })
