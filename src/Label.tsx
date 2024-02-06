@@ -3,44 +3,42 @@ import * as THREE  from 'three';
 
 interface LabelProps {
   path:THREE.Path
-  label:string
+  output?: (label:string,node:THREE.Group) => void
+  label?:string
   pos:number
 }
 
 export const Label = ({
   path,
+  output,
   label,
   pos,
   ...props
 }: LabelProps) => {
+
   const ref = useCallback((node:any) => {
     if(node !== null) {
       const newPos = path.getPoint(pos); 
       const vec = new THREE.Vector3(newPos.x,newPos.y,0); 
       node.position.copy(vec);
 
+      if(output) {
+        output(label,node);
+      }
     }
-  },[path,pos])
+  },[path,pos,label,output])
 
   const texture = new THREE.Texture( generateDotTexture() );
   texture.needsUpdate = true;
 
-  const textureText = new THREE.Texture( generateLabelTexture(label) );
-  textureText.needsUpdate = true;
-
   return (
     <group ref={ref}>
-      <sprite visible position={[0,0.1,0]} scale={[0.7,0.7,0.7]} {...props}>
-        <spriteMaterial map={textureText} sizeAttenuation={false} depthWrite={false} color={[1,1,1]} />
-      </sprite>
-      <sprite visible scale={[0.01,0.01,0.01]} {...props}>
+      <sprite visible scale={[0.03,0.03,0.03]} {...props}>
         <spriteMaterial map={texture} sizeAttenuation={false} depthWrite={false} />
       </sprite>
     </group>
   );
 };
-
-
 
 function generateDotTexture() {
   const canvas = document.createElement( 'canvas' );
@@ -54,12 +52,10 @@ function generateDotTexture() {
   context.fillStyle = 'black';
   context.fill();
 
-  context.font = "48px serif";
-  context.fillText("QPOCdsfdsfdsfdsfdsfdsf", 10, 50);
-
   return canvas;
 }
 
+/*
 function generateLabelTexture(label:string) {
   
   const canvas = document.createElement( 'canvas' );
@@ -87,4 +83,4 @@ function generateLabelTexture(label:string) {
 
 
   return canvas;
-}
+}*/
