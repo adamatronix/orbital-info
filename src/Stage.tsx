@@ -1,6 +1,6 @@
 import { Orbit } from './Orbit';
 import styled from 'styled-components';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Label } from './Label';
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -60,7 +60,7 @@ const LabelsWrapper = styled.div`
 const LabelText = styled.div`
   display: block;
   position: absolute;
-  transition: transform .2s easeInOut;
+  transition: transform 1s easeInOut;
   will-change: transform;
 `
 
@@ -98,8 +98,9 @@ interface OrbitsProps {
 
 const Orbits = ({setLabelsArray}:OrbitsProps) => {
   const path = new THREE.Path().absarc(0, 0, 2, 0, Math.PI * 2);
+  const orbitGroup = useRef<THREE.Group>(null!);
 
-  useFrame(({camera,gl}) => {
+  useFrame(({camera,gl,clock}) => {
     setLabelsArray( oldArray => {
       const newArray = [];
       oldArray.forEach((labelObj:any) => {
@@ -108,6 +109,16 @@ const Orbits = ({setLabelsArray}:OrbitsProps) => {
       })
       return newArray
     })
+
+    if(orbitGroup.current) {
+      const time = clock.getElapsedTime() / 5;
+      const x = time;
+      const y = time;
+      const z = time;
+      orbitGroup.current.rotation.x = x;
+      orbitGroup.current.rotation.y = y;
+      orbitGroup.current.rotation.z = z;
+    }
   })
 
   const output = useCallback((label:string,node:THREE.Group) => {
@@ -126,20 +137,24 @@ const Orbits = ({setLabelsArray}:OrbitsProps) => {
   },[setLabelsArray])
 
   return (
-    <>
-      <Orbit>
+    <group ref={orbitGroup}>
+      <Orbit rotation={[THREE.MathUtils.degToRad(22.5),THREE.MathUtils.degToRad(0),0]}>
         <Label path={path} label="QPOC" pos={0.5} output={output}/>
         <Label path={path} label="FEMINISM" pos={0.1} output={output}/>
       </Orbit>
-      <Orbit rotation={[Math.PI / 4,Math.PI / 4,0]}>
+      <Orbit rotation={[THREE.MathUtils.degToRad(0),THREE.MathUtils.degToRad(120),0]}>
         <Label path={path} label="ICE SPICE" pos={0.2} output={output}/>
         <Label path={path} label="DOWNSYDROME" pos={0.8} output={output}/>
       </Orbit>
-      <Orbit rotation={[-Math.PI / 4, -Math.PI / 2 ,0]}>
-        <Label path={path} label="POOP" pos={0.4} output={output}/>
-        <Label path={path} label="BUTT" pos={0.9} output={output}/>
+      <Orbit rotation={[THREE.MathUtils.degToRad(0), THREE.MathUtils.degToRad(240) ,0]}>
+        <Label path={path} label="GLOBAL WARMING" pos={0.4} output={output}/>
+        <Label path={path} label="COMPOSTING" pos={0.9} output={output}/>
       </Orbit>
-    </>
+      <Orbit rotation={[THREE.MathUtils.degToRad(90), 0 ,0]}>
+        <Label path={path} label="INCLUSIVENESS" pos={0.4} output={output}/>
+        <Label path={path} label="RACE WAR" pos={0.9} output={output}/>
+      </Orbit>
+    </group>
   )
 }
 
