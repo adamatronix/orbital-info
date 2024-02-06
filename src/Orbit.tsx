@@ -37,7 +37,7 @@ export const Orbit = ({
   return (
     <line ref={lineGeom} {...props}>
       <bufferGeometry attach="geometry" ref={circGeom}/>
-      <lineDashedMaterial attach="material" color="black" transparent opacity={1} dashSize={0.02} gapSize={0.02} linewidth={1}/>
+      <lineDashedMaterial attach="material" color="black" transparent opacity={1} dashSize={0.03} gapSize={0.03} linewidth={1}/>
       { children || null}
     </line>
   );

@@ -3,23 +3,30 @@ import * as THREE  from 'three';
 
 interface LabelProps {
   path:THREE.Path
+  output?: (label:string,node:THREE.Group) => void
   label?:string
   pos:number
 }
 
 export const Label = ({
   path,
+  output,
+  label,
   pos,
   ...props
 }: LabelProps) => {
+
   const ref = useCallback((node:any) => {
     if(node !== null) {
       const newPos = path.getPoint(pos); 
       const vec = new THREE.Vector3(newPos.x,newPos.y,0); 
       node.position.copy(vec);
 
+      if(output) {
+        output(label,node);
+      }
     }
-  },[path,pos])
+  },[path,pos,label,output])
 
   const texture = new THREE.Texture( generateDotTexture() );
   texture.needsUpdate = true;
