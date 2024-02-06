@@ -1,6 +1,6 @@
 {
   "name": "@adamatronix/orbital-info",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "type": "module",
   "module": "./dist/orbital-info.js",
   "types": "./dist/index.d.ts",

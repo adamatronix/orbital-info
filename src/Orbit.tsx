@@ -19,8 +19,6 @@ export const Orbit = ({
 
     if(orbitRef) {
       const time = clock.getElapsedTime() / 20;
-      const x = rotation[0] + time;
-      const y = rotation[1] + time;
       const z = rotation[2] + time;
       // This function runs at the native refresh rate inside of a shared render-loop
       /*orbitRef.rotation.y = y;
