@@ -3,8 +3,9 @@ import { Stage } from './Stage'
 
 const Wrapper = styled.div`
   position: relative;
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  aspect-ratio: 1 / 1;
+  width: 100%;
 `
 
 function App() {
