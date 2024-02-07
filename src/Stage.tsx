@@ -1,9 +1,10 @@
 import { Orbit } from './Orbit';
 import styled from 'styled-components';
+import { useGesture } from '@use-gesture/react'
 import React, { useState, useCallback, useRef } from 'react';
 import { Label } from './Label';
-import { OrbitControls, OrthographicCamera } from '@react-three/drei';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { OrthographicCamera } from '@react-three/drei';
+import { Canvas, useFrame} from '@react-three/fiber';
 import * as THREE  from 'three';
 
 interface StageProps {
@@ -18,11 +19,13 @@ const Wrapper = styled.div`
 export const Stage = ({
   ...props
 }: StageProps) => {
+  const targetRef = useRef(null)
   const [ labelsArray, setLabelArray] = useState([])
+
   return (
-    <Wrapper {...props}>
+    <Wrapper ref={targetRef} {...props}>
       <Labels labelsArray={labelsArray}/>
-      <CanvasComp setLabelsArray={setLabelArray}/>
+      <CanvasComp target={targetRef.current} setLabelsArray={setLabelArray}/>
     </Wrapper>
   );
 };
@@ -30,10 +33,13 @@ export const Stage = ({
 
 interface CanvasCompProps {
   setLabelsArray: (a:any) => void
+  target: any
 }
 const CanvasComp = React.memo(({
+  target,
   setLabelsArray
 }:CanvasCompProps) => {
+
   return (
     <Canvas shadows>
         <color attach="background" args={['#fff']} />
@@ -41,8 +47,9 @@ const CanvasComp = React.memo(({
           <sphereGeometry args={[2, 64, 64]} attach="geometry" />
           <meshStandardMaterial color="black" opacity={0.02} transparent depthWrite={false}/>
         </mesh>
-        <Orbits setLabelsArray={setLabelsArray}/>
-        <OrbitControls enablePan={false} enableZoom={false}/>
+        <OrbitOutside target={target}>
+          <Orbits setLabelsArray={setLabelsArray}/> 
+        </OrbitOutside>
         <OrthographicCamera makeDefault manual top={2.2} bottom={-2.2} left={-2.2} right={2.2} zoom={1} near={0} far={3000} position={[0,0,10]}/>
       </Canvas>
   )
@@ -91,6 +98,49 @@ const Labels = React.memo(({labelsArray}:LabelsProps) => {
     </LabelsWrapper>
   )
 })
+
+
+interface OrbitOutsideProps {
+  children: React.ReactNode,
+  target: any
+}
+
+const OrbitOutside = ({
+  children,
+  target
+}:OrbitOutsideProps) => {
+  const lastPosition = useRef([0,0]);
+  const positions = useRef([0,0]);
+  const orbitGroup = useRef<THREE.Group>(null!);
+
+  useFrame(() => {
+    orbitGroup.current.rotation.y = THREE.MathUtils.lerp(orbitGroup.current.rotation.y, positions.current[0] / 50, 0.1)
+    orbitGroup.current.rotation.x = THREE.MathUtils.lerp(orbitGroup.current.rotation.x, positions.current[1] / 50, 0.1)
+  })
+
+
+  useGesture(
+    {
+      onDrag: ({ down, movement: pos }) => {
+        positions.current = [lastPosition.current[0] + (-1 * pos[0]), lastPosition.current[1] + (-1 * pos[1])];
+
+        if(!down) {
+          lastPosition.current = positions.current;
+          console.log('down')
+        }
+      },
+    }, 
+    {
+      target: target
+    }
+  )
+  
+  return (
+    <group ref={orbitGroup}>
+      {children}
+    </group>
+  )
+}
 
 interface OrbitsProps {
   setLabelsArray: (a:any) => void
