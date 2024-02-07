@@ -1,6 +1,6 @@
 {
   "name": "@adamatronix/orbital-info",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "type": "module",
   "module": "./dist/orbital-info.js",
   "types": "./dist/index.d.ts",
@@ -23,6 +23,7 @@
     "@react-three/fiber": "^8.15.16",
     "@types/node": "^20.8.0",
     "@types/three": "^0.161.1",
+    "@use-gesture/react": "^10.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "^6.1.8",

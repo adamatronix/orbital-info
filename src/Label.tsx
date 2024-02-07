@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import * as THREE  from 'three';
+import { useFrame} from '@react-three/fiber';
 
 interface LabelProps {
   path:THREE.Path
@@ -15,9 +16,34 @@ export const Label = ({
   pos,
   ...props
 }: LabelProps) => {
+  const initPos = useRef<number>(pos);
+  const pointScale = useRef<number>(pos);
+  const totalElapsed = useRef<number>(0);
+  const speed = THREE.MathUtils.randInt(50,100);
+  const [ labelRef, setLabelRef ] = useState(null!);
+  useFrame(({clock}) => {
+    if(labelRef) {
+      const time = (clock.getElapsedTime() - totalElapsed.current) / speed;
+      if(pointScale.current > 1) {
+        totalElapsed.current = clock.getElapsedTime();
+        pointScale.current = 0;
+        initPos.current = 0;
+      } else if ( pointScale.current < 0) {
+        pointScale.current = 1;
+        initPos.current = 1;
+      } else {
+        pointScale.current = initPos.current + time;
+      }
+      const newPos = path.getPoint(pointScale.current); 
+      const vec = new THREE.Vector3(newPos.x,newPos.y,0); 
+      labelRef.position.copy(vec);
+    }
+
+  })
 
   const ref = useCallback((node:any) => {
     if(node !== null) {
+      setLabelRef(node);
       const newPos = path.getPoint(pos); 
       const vec = new THREE.Vector3(newPos.x,newPos.y,0); 
       node.position.copy(vec);
