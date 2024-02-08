@@ -4,8 +4,9 @@ import { useFrame} from '@react-three/fiber';
 
 interface LabelProps {
   path:THREE.Path
-  output?: (label:string,node:THREE.Group) => void
+  output?: (label:string,node:THREE.Group,color?:string) => void
   label?:string
+  color?:string
   pos:number
 }
 
@@ -13,6 +14,7 @@ export const Label = ({
   path,
   output,
   label,
+  color,
   pos,
   ...props
 }: LabelProps) => {
@@ -35,8 +37,12 @@ export const Label = ({
         pointScale.current = initPos.current + time;
       }
       const newPos = path.getPoint(pointScale.current); 
-      const vec = new THREE.Vector3(newPos.x,newPos.y,0); 
-      labelRef.position.copy(vec);
+
+      if(newPos) {
+        const vec = new THREE.Vector3(newPos.x,newPos.y,0); 
+        labelRef.position.copy(vec);
+      }
+      
     }
 
   })
@@ -49,24 +55,24 @@ export const Label = ({
       node.position.copy(vec);
 
       if(output) {
-        output(label,node);
+        output(label,node,color);
       }
     }
-  },[path,pos,label,output])
+  },[path,pos,label,output,color])
 
-  const texture = new THREE.Texture( generateDotTexture() );
+  const texture = new THREE.Texture( generateDotTexture(color) );
   texture.needsUpdate = true;
 
   return (
     <group ref={ref}>
-      <sprite visible scale={[0.03,0.03,0.03]} {...props}>
+      <sprite visible scale={[0.05,0.05,0.05]} {...props}>
         <spriteMaterial map={texture} sizeAttenuation={false} depthWrite={false} />
       </sprite>
     </group>
   );
 };
 
-function generateDotTexture() {
+function generateDotTexture(color?:string) {
   const canvas = document.createElement( 'canvas' );
   canvas.width = 30;
   canvas.height = 30;
@@ -75,7 +81,7 @@ function generateDotTexture() {
 
   context.beginPath();
   context.arc(canvas.width/2, canvas.height/2, 15, 0, 2 * Math.PI, false);
-  context.fillStyle = 'black';
+  context.fillStyle = color || 'black';
   context.fill();
 
   return canvas;
