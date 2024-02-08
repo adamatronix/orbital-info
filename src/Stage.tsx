@@ -76,9 +76,9 @@ const LabelTextInner = styled.div`
   transform: translate(-50%, -150%);
   color: black;
   background: #eee;
-  border-radius: 4px;
+  border-radius: 100px;
   font-size: 12px;
-  padding: 2px 6px;
+  padding: 3px 8px;
 `
 
 interface LabelsProps {
@@ -91,7 +91,7 @@ const Labels = React.memo(({labelsArray}:LabelsProps) => {
     <LabelsWrapper>
       { labelsArray && labelsArray.map((label,i) => {
         return <LabelText key={i} style={label.position ?{ transform: `translate3d(${label.position.x}px, ${label.position.y}px, 0)`} : {}}>
-          <LabelTextInner>{label.label}</LabelTextInner>
+          <LabelTextInner style={label.color ? {background: label.color} : {}}>{label.label}</LabelTextInner>
         </LabelText>
       })}
 
@@ -171,7 +171,7 @@ const Orbits = ({setLabelsArray}:OrbitsProps) => {
     }
   })
 
-  const output = useCallback((label:string,node:THREE.Group) => {
+  const output = useCallback((label:string,node:THREE.Group,color?:string) => {
     setLabelsArray(oldArray => {
 
       const doesExist = oldArray.filter(obj => {
@@ -182,27 +182,26 @@ const Orbits = ({setLabelsArray}:OrbitsProps) => {
         return oldArray;
       }
 
-      return [...oldArray, { label: label, node: node}]
+      return [...oldArray, { label: label, node: node, color: color}]
     })
   },[setLabelsArray])
 
   return (
     <group ref={orbitGroup}>
       <Orbit rotation={[THREE.MathUtils.degToRad(22.5),THREE.MathUtils.degToRad(0),0]}>
-        <Label path={path} label="QPOC" pos={0.5} output={output}/>
-        <Label path={path} label="FEMINISM" pos={0.1} output={output}/>
+        <Label path={path} label="Microsoft" pos={0.5} output={output} color="#FFC1DD"/>
+        <Label path={path} label="Rewind" pos={0.1} output={output} color="#A7B7FF"/>
       </Orbit>
       <Orbit rotation={[THREE.MathUtils.degToRad(0),THREE.MathUtils.degToRad(120),0]}>
-        <Label path={path} label="ICE SPICE" pos={0.2} output={output}/>
-        <Label path={path} label="DOWNSYDROME" pos={0.8} output={output}/>
+        <Label path={path} label="Rabbit" pos={0.2} output={output} color="#BBFFF7"/>
+        <Label path={path} label="Apple" pos={0.8} output={output} color="#BDA0FF"/>
       </Orbit>
       <Orbit rotation={[THREE.MathUtils.degToRad(0), THREE.MathUtils.degToRad(240) ,0]}>
-        <Label path={path} label="GLOBAL WARMING" pos={0.4} output={output}/>
-        <Label path={path} label="COMPOSTING" pos={0.9} output={output}/>
+        <Label path={path} label="World Coin" pos={0.4} output={output} color="#AAEBFF"/>
       </Orbit>
       <Orbit rotation={[THREE.MathUtils.degToRad(90), 0 ,0]}>
-        <Label path={path} label="INCLUSIVENESS" pos={0.4} output={output}/>
-        <Label path={path} label="RACE WAR" pos={0.9} output={output}/>
+        <Label path={path} label="Oura" pos={0.6} output={output} color="#FAC1FF"/>
+        <Label path={path} label="Meta" pos={0.9} output={output} color="#C977FF"/>
       </Orbit>
     </group>
   )
