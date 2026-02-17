@@ -7,8 +7,37 @@ import { OrthographicCamera } from '@react-three/drei';
 import { Canvas, useFrame} from '@react-three/fiber';
 import * as THREE  from 'three';
 
-interface StageProps {
+export interface LabelConfig {
+  label: string;
+  pos: number;
+  color?: string;
+}
 
+export interface OrbitConfig {
+  rotation: [number, number, number];
+  labels: LabelConfig[];
+}
+
+const DEFAULT_ORBITS: OrbitConfig[] = [
+  { rotation: [22.5, 0, 0], labels: [
+    { label: "Microsoft", pos: 0.5, color: "#FFC1DD" },
+    { label: "Rewind", pos: 0.1, color: "#A7B7FF" },
+  ]},
+  { rotation: [0, 120, 0], labels: [
+    { label: "Rabbit", pos: 0.2, color: "#BBFFF7" },
+    { label: "Apple", pos: 0.8, color: "#BDA0FF" },
+  ]},
+  { rotation: [0, 240, 0], labels: [
+    { label: "World Coin", pos: 0.4, color: "#AAEBFF" },
+  ]},
+  { rotation: [90, 0, 0], labels: [
+    { label: "Oura", pos: 0.6, color: "#FAC1FF" },
+    { label: "Meta", pos: 0.9, color: "#C977FF" },
+  ]},
+];
+
+interface StageProps {
+  orbits?: OrbitConfig[];
 }
 
 const Wrapper = styled.div`
@@ -17,6 +46,7 @@ const Wrapper = styled.div`
   height: 100%;
 `
 export const Stage = ({
+  orbits = DEFAULT_ORBITS,
   ...props
 }: StageProps) => {
   const targetRef = useRef(null)
@@ -25,7 +55,7 @@ export const Stage = ({
   return (
     <Wrapper ref={targetRef} {...props}>
       <Labels labelsArray={labelsArray}/>
-      <CanvasComp target={targetRef.current} setLabelsArray={setLabelArray}/>
+      <CanvasComp target={targetRef.current} setLabelsArray={setLabelArray} orbits={orbits}/>
     </Wrapper>
   );
 };
@@ -34,10 +64,12 @@ export const Stage = ({
 interface CanvasCompProps {
   setLabelsArray: (a:any) => void
   target: any
+  orbits: OrbitConfig[]
 }
 const CanvasComp = React.memo(({
   target,
-  setLabelsArray
+  setLabelsArray,
+  orbits
 }:CanvasCompProps) => {
 
   return (
@@ -48,7 +80,7 @@ const CanvasComp = React.memo(({
           <meshStandardMaterial color="black" opacity={0.02} transparent depthWrite={false}/>
         </mesh>
         <OrbitOutside target={target}>
-          <Orbits setLabelsArray={setLabelsArray}/> 
+          <Orbits setLabelsArray={setLabelsArray} orbits={orbits}/> 
         </OrbitOutside>
         <OrthographicCamera makeDefault manual top={2.2} bottom={-2.2} left={-2.2} right={2.2} zoom={1} near={0} far={3000} position={[0,0,10]}/>
       </Canvas>
@@ -67,7 +99,6 @@ const LabelsWrapper = styled.div`
 const LabelText = styled.div`
   display: block;
   position: absolute;
-  transition: transform 1s easeInOut;
   will-change: transform;
 `
 
@@ -144,9 +175,10 @@ const OrbitOutside = ({
 
 interface OrbitsProps {
   setLabelsArray: (a:any) => void
+  orbits: OrbitConfig[]
 }
 
-const Orbits = ({setLabelsArray}:OrbitsProps) => {
+const Orbits = ({setLabelsArray, orbits}:OrbitsProps) => {
   const path = new THREE.Path().absarc(0, 0, 2, 0, Math.PI * 2);
   const orbitGroup = useRef<THREE.Group>(null!);
 
@@ -188,21 +220,23 @@ const Orbits = ({setLabelsArray}:OrbitsProps) => {
 
   return (
     <group ref={orbitGroup}>
-      <Orbit rotation={[THREE.MathUtils.degToRad(22.5),THREE.MathUtils.degToRad(0),0]}>
-        <Label path={path} label="Microsoft" pos={0.5} output={output} color="#FFC1DD"/>
-        <Label path={path} label="Rewind" pos={0.1} output={output} color="#A7B7FF"/>
-      </Orbit>
-      <Orbit rotation={[THREE.MathUtils.degToRad(0),THREE.MathUtils.degToRad(120),0]}>
-        <Label path={path} label="Rabbit" pos={0.2} output={output} color="#BBFFF7"/>
-        <Label path={path} label="Apple" pos={0.8} output={output} color="#BDA0FF"/>
-      </Orbit>
-      <Orbit rotation={[THREE.MathUtils.degToRad(0), THREE.MathUtils.degToRad(240) ,0]}>
-        <Label path={path} label="World Coin" pos={0.4} output={output} color="#AAEBFF"/>
-      </Orbit>
-      <Orbit rotation={[THREE.MathUtils.degToRad(90), 0 ,0]}>
-        <Label path={path} label="Oura" pos={0.6} output={output} color="#FAC1FF"/>
-        <Label path={path} label="Meta" pos={0.9} output={output} color="#C977FF"/>
-      </Orbit>
+      {orbits.map((orbitConfig, orbitIndex) => (
+        <Orbit
+          key={orbitIndex}
+          rotation={orbitConfig.rotation.map((deg) => THREE.MathUtils.degToRad(deg)) as [number, number, number]}
+        >
+          {orbitConfig.labels.map((labelConfig, labelIndex) => (
+            <Label
+              key={`${orbitIndex}-${labelIndex}`}
+              path={path}
+              label={labelConfig.label}
+              pos={labelConfig.pos}
+              color={labelConfig.color}
+              output={output}
+            />
+          ))}
+        </Orbit>
+      ))}
     </group>
   )
 }
