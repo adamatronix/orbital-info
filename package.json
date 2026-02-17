@@ -1,6 +1,6 @@
 {
   "name": "@adamatronix/orbital-info",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "type": "module",
   "module": "./dist/orbital-info.js",
   "types": "./dist/index.d.ts",
@@ -40,6 +40,6 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
-    "vite-plugin-externalize-deps": "^0.7.0"
+    "vite-plugin-externalize-deps": "^0.10.0"
   }
 }
