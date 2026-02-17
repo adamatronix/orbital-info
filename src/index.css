@@ -27,6 +27,11 @@ body {
   min-height: 100vh;
 }
 
+.orbital-label {
+  pointer-events: none;
+  will-change: transform;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
