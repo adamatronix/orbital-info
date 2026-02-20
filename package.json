@@ -1,12 +1,13 @@
 {
   "name": "@adamatronix/orbital-info",
-  "version": "1.1.7",
+  "version": "1.1.9",
   "type": "module",
   "module": "./dist/orbital-info.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/orbital-info.js"
+      "import": "./dist/orbital-info.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -14,24 +15,33 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "@react-three/drei": "^9.97.0",
+    "@react-three/fiber": "^8.15.16",
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0",
+    "styled-components": "^6.1.8",
+    "three": "^0.161.0",
+    "@use-gesture/react": "^10.3.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
     "@react-three/drei": "^9.97.0",
     "@react-three/fiber": "^8.15.16",
     "@types/node": "^20.8.0",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
     "@types/three": "^0.161.1",
     "@use-gesture/react": "^10.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "^6.1.8",
-    "three": "^0.161.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
+    "three": "^0.161.0",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
