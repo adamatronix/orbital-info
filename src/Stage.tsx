@@ -68,7 +68,7 @@ const CanvasComp = React.memo(({
   orbits,
 }: CanvasCompProps) => {
   return (
-    <Canvas shadows>
+    <Canvas shadows style={{overflow: 'visible'}}>
         <color attach="background" args={['#fff']} />
         <mesh position={[0, 0, 0]} receiveShadow castShadow>
           <sphereGeometry args={[2, 64, 64]} attach="geometry" />
